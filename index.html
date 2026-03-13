@@ -12,16 +12,16 @@
 <body>
     <canvas id="bgCanvas"></canvas>
     
-    <a href="#" class="title-link">
+    <div class="title-link" onclick="window.location.reload()">
         <div class="header-frame">
             <h1 class="title">OpenGradient USER CARD</h1>
         </div>
-    </a>
+    </div>
 
     <div class="container">
         <div class="panel">
-            <input type="text" id="username" placeholder="@username" value="@sery2013">
-            <input type="date" id="date" value="2026-03-12">
+            <input type="text" id="username" placeholder="@username">
+            <input type="date" id="date">
             
             <div class="file-upload">
                 <label for="avatar" class="file-upload-btn">📁 Choose Avatar</label>
@@ -53,13 +53,13 @@
             <canvas id="cardCanvas" width="800" height="400"></canvas>
             
             <div class="bio-panel">
-                <input type="text" id="userBio" placeholder="Your bio..." value="Web3 Explorer & Content Enthusiast">
+                <input type="text" id="userBio" placeholder="Your bio...">
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <p>© 2026 <a href="https://opengradient.io" class="footer-link">opengradient.io</a></p>
+        <p>© 2026 <a href="https://opengradient.io" class="footer-link" target="_blank">opengradient.io</a></p>
         <p>Developer: <a href="https://x.com/kaye_moni" class="twitter-link" target="_blank">
             <svg class="twitter-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>

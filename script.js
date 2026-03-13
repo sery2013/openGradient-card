@@ -189,9 +189,9 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.beginPath(); ctx.moveTo(275, 35); ctx.lineTo(765, 35); ctx.stroke();
     ctx.restore();
     
-    const username = document.getElementById("username").value || "";
-    const date = document.getElementById("date").value || "";
-    const bioText = document.getElementById("userBio").value || "";
+    const username = document.getElementById("username").value;
+    const date = document.getElementById("date").value;
+    const bioText = document.getElementById("userBio").value;
     
     ctx.save();
     ctx.strokeStyle = "rgba(20, 184, 166, 0.3)";

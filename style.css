@@ -4,18 +4,31 @@
     box-sizing: border-box;
 }
 
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
 body {
     background: radial-gradient(circle at top right, #0d9488, #0f172a),
     radial-gradient(circle at bottom left, #14b8a6, #0f172a);
     background-attachment: fixed;
     font-family: 'Fredoka', Arial, sans-serif;
     color: white;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
+    position: relative;
+}
+
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .title-link {
@@ -23,6 +36,8 @@ body {
     display: block;
     width: 100%;
     cursor: pointer;
+    position: relative;
+    z-index: 1;
 }
 
 .header-frame {
@@ -110,6 +125,8 @@ body {
     margin: 20px;
     flex: 1;
     flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
 }
 
 .panel {
@@ -302,6 +319,8 @@ canvas#cardCanvas {
     margin-top: auto;
     background: rgba(5, 5, 8, 0.8);
     border-top: 1px solid rgba(20, 184, 166, 0.1);
+    position: relative;
+    z-index: 1;
 }
 
 .footer p { margin: 5px 0; font-size: 14px; color: rgba(255, 255, 255, 0.6); }

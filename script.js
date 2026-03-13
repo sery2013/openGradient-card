@@ -190,7 +190,14 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.restore();
     
     const username = document.getElementById("username").value;
-    const date = document.getElementById("date").value;
+    
+    // Форматирование даты на английский: "Mar 12, 2026"
+    let date = document.getElementById("date").value;
+    if (date) {
+        const dateObj = new Date(date);
+        date = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    
     const bioText = document.getElementById("userBio").value;
     
     ctx.save();

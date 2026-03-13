@@ -189,20 +189,20 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.beginPath(); ctx.moveTo(275, 35); ctx.lineTo(765, 35); ctx.stroke();
     ctx.restore();
     
-    const username = document.getElementById("username").value || "@sery2013";
-    const date = document.getElementById("date").value || "2026-03-12";
-    const bioText = document.getElementById("userBio").value || "Web3 Explorer & Content Enthusiast";
+    const username = document.getElementById("username").value || "";
+    const date = document.getElementById("date").value || "";
+    const bioText = document.getElementById("userBio").value || "";
     
     ctx.save();
     ctx.strokeStyle = "rgba(20, 184, 166, 0.3)";
     ctx.strokeRect(185, 65, 580, 50);
     ctx.fillStyle = "white"; ctx.font = "bold 24px Fredoka";
-    ctx.fillText(username, 205, 100);
+    ctx.fillText(username || "@username", 205, 100);
     
     ctx.strokeStyle = "rgba(45, 212, 191, 0.2)";
     ctx.strokeRect(185, 125, 580, 40);
     ctx.fillStyle = "#aaa"; ctx.font = "18px Fredoka";
-    ctx.fillText("Joined: " + date, 205, 152);
+    ctx.fillText("Joined: " + (date || "Not set"), 205, 152);
     ctx.restore();
     
     ctx.save();
@@ -242,7 +242,7 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
     ctx.fillRect(185, bioY, 580, 45);
     ctx.fillStyle = "#eee"; ctx.font = "italic 16px Fredoka";
-    ctx.fillText(bioText, 205, bioY + 28);
+    ctx.fillText(bioText || "Your bio...", 205, bioY + 28);
     ctx.restore();
     
     ctx.save();

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenGradient User Card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="bgCanvas"></canvas>
+    
+    <a href="#" class="title-link">
+        <div class="header-frame">
+            <h1 class="title">OpenGradient USER CARD</h1>
+        </div>
+    </a>
+
+    <div class="container">
+        <div class="panel">
+            <input type="text" id="username" placeholder="@username" value="@sery2013">
+            <input type="date" id="date" value="2026-03-12">
+            
+            <div class="file-upload">
+                <label for="avatar" class="file-upload-btn">📁 Choose Avatar</label>
+                <input type="file" id="avatar" accept="image/*">
+            </div>
+
+            <div class="roles">
+                <label><input type="checkbox" value="Quantling"> Quantling</label>
+                <label><input type="checkbox" value="Quant Apprentice"> Quant Apprentice</label>
+                <label><input type="checkbox" value="Quant Associate"> Quant Associate</label>
+                <label><input type="checkbox" value="Senior Quant"> Senior Quant</label>
+                <label><input type="checkbox" value="Master Quant"> Master Quant</label>
+                <label><input type="checkbox" value="Elite Quant"> Elite Quant</label>
+                <label><input type="checkbox" value="The Supreme Quant"> The Supreme Quant</label>
+                <label><input type="checkbox" value="OG"> OG</label>
+                <label><input type="checkbox" value="ALPHA OG"> ALPHA OG</label>
+                <label><input type="checkbox" value="Server Booster"> Server Booster</label>
+                <label><input type="checkbox" value="Honorable"> Honorable</label>
+            </div>
+
+            <div class="button-group">
+                <button onclick="generateCard()">Generate Card</button>
+                <button onclick="downloadCard()">Download</button>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <div class="canvas-loader" id="skeleton">READY TO BUILD...</div>
+            <canvas id="cardCanvas" width="800" height="400"></canvas>
+            
+            <div class="bio-panel">
+                <input type="text" id="userBio" placeholder="Your bio..." value="Web3 Explorer & Content Enthusiast">
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 <a href="https://opengradient.ai" class="footer-link">opengradient.ai</a></p>
+        <p>Developer: <a href="https://x.com/kaye_moni" class="twitter-link" target="_blank">
+            <svg class="twitter-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            @kaye_moni
+        </a></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

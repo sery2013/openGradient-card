@@ -192,18 +192,16 @@ function renderAll(ctx, canvas, avatarImg) {
     
     const username = document.getElementById("username").value || "sery2013";
     
-    // --- ИСПРАВЛЕННЫЙ БЛОК ДАТЫ (ВСЕГДА ENGLISH) ---
+    // --- ИСПРАВЛЕННЫЙ БЛОК ДАТЫ ---
     let dateInput = document.getElementById("date").value;
-    let dateDisplay = "Not set";
+    let dateDisplay = "Mar 14, 2026"; // Значение по умолчанию на английском
+    
     if (dateInput) {
-        // Проверяем, введена ли дата в формате YYYY-MM-DD (стандартный input date)
         const dateObj = new Date(dateInput);
         if (!isNaN(dateObj.getTime())) {
-            // Если это валидная дата, принудительно выводим её на английском
-            dateDisplay = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        } else {
-            // Если пользователь ввел текст вручную в input type="text", выводим его как есть
-            dateDisplay = dateInput;
+            // ФОРМИРУЕМ АНГЛИЙСКУЮ СТРОКУ ВРУЧНУЮ (чтобы не зависеть от системы)
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            dateDisplay = months[dateObj.getMonth()] + " " + dateObj.getDate() + ", " + dateObj.getFullYear();
         }
     }
     

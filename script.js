@@ -290,7 +290,7 @@ function renderAll(ctx, canvas, avatarImg) {
     if (qrImg.complete) {
         ctx.drawImage(qrImg, 35, 245, 120, 120);
         ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.font = "10px Fredoka"; ctx.textAlign = "center";
-        ctx.fillText("getoro.xyz", 95, 380);
+        ctx.fillText("opengradient.ai", 95, 380);
     }
     
     if (isGenerating) {

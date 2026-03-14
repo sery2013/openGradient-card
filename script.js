@@ -192,13 +192,18 @@ function renderAll(ctx, canvas, avatarImg) {
     
     const username = document.getElementById("username").value || "sery2013";
     
-    // ИЗМЕНЕНО: Исправленная логика получения даты
+    // ОБНОВЛЕННАЯ ЛОГИКА: Всегда английский формат даты
     let dateInput = document.getElementById("date").value;
     let dateDisplay = "Not set";
     if (dateInput) {
         const dateObj = new Date(dateInput);
         if (!isNaN(dateObj.getTime())) {
-            dateDisplay = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            // Используем 'en-US' для принудительного английского текста
+            dateDisplay = dateObj.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
         }
     }
     

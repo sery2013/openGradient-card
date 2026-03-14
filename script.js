@@ -272,14 +272,14 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.save();
     ctx.textAlign = "right";
     const pulse = 10 + Math.sin(Date.now() / 500) * 8;
-    // ИЗМЕНЕНО: Градиент бирюзовый (OРG)
+    // ИЗМЕНЕНО: Градиент бирюзовый (OPG)
     const ogGrad = ctx.createLinearGradient(700, 360, 760, 360);
     ogGrad.addColorStop(0, "#2dd4bf"); 
     ogGrad.addColorStop(1, "#14b8a6");
     
     ctx.fillStyle = ogGrad; ctx.font = "bold 60px Fredoka";
     ctx.shadowColor = "#14b8a6"; ctx.shadowBlur = pulse;
-    ctx.fillText("OРG", 760, 360); // ИЗМЕНЕНО: текст на OРG
+    ctx.fillText("OPG", 760, 360); // ИЗМЕНЕНО: текст на OPG
     ctx.restore();
     
     // ИЗМЕНЕНО: QR-код теперь ведет на opengradient.ai

@@ -270,7 +270,7 @@ function renderAll(ctx, canvas, avatarImg) {
     drawIcon(185, sY, "white", 'x'); ctx.fillText("Twitter", 207, sY);
     drawIcon(285, sY, "#0088cc", 'tg'); ctx.fillText("Telegram", 307, sY);
     drawIcon(395, sY, "#5865F2", 'dc'); ctx.fillText("Discord", 417, sY);
-    ctx.fillText("🌐 getoro.xyz", 505, sY);
+    ctx.fillText("🌐 opengradient.ai", 505, sY);
     ctx.restore();
     
     ctx.save();
@@ -283,7 +283,7 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.fillText("ORO", 760, 360);
     ctx.restore();
     
-    const qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://getoro.xyz";
+    const qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://opengradient.ai";
     const qrImg = new Image();
     qrImg.crossOrigin = "anonymous";
     qrImg.src = qrSrc;

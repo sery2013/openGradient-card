@@ -192,13 +192,14 @@ function renderAll(ctx, canvas, avatarImg) {
     
     const username = document.getElementById("username").value || "sery2013";
     
-    // ФОРМАТИРОВАНИЕ ДАТЫ НА АНГЛИЙСКИЙ
-    let date = document.getElementById("date").value;
-    if (date) {
-        const dateObj = new Date(date);
-        date = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    } else {
-        date = "Not set";
+    // ИЗМЕНЕНО: Исправленная логика получения даты
+    let dateInput = document.getElementById("date").value;
+    let dateDisplay = "Not set";
+    if (dateInput) {
+        const dateObj = new Date(dateInput);
+        if (!isNaN(dateObj.getTime())) {
+            dateDisplay = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
     }
     
     const bioText = document.getElementById("userBio").value || "Web3 Explorer & Content Enthusiast";
@@ -212,7 +213,7 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.strokeStyle = "rgba(255, 204, 0, 0.2)";
     ctx.strokeRect(185, 125, 580, 40);
     ctx.fillStyle = "#aaa"; ctx.font = "18px Fredoka";
-    ctx.fillText("Joined: " + date, 205, 152);
+    ctx.fillText("Joined: " + dateDisplay, 205, 152);
     ctx.restore();
     
     ctx.save();

@@ -148,7 +148,7 @@ function renderAll(ctx, canvas, avatarImg) {
     }
     ctx.fillStyle = "rgba(255, 122, 24, 0.04)";
     ctx.font = "bold 40px Fredoka";
-    const symbols = ["( )", "ORO", "*", "◇"];
+    const symbols = ["( )", "OG", "*", "◇"];
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 6; j++) {
             ctx.save();
@@ -192,7 +192,6 @@ function renderAll(ctx, canvas, avatarImg) {
     
     const username = document.getElementById("username").value || "sery2013";
     
-    // ФОРМАТИРОВАНИЕ ДАТЫ НА АНГЛИЙСКИЙ
     let date = document.getElementById("date").value;
     if (date) {
         const dateObj = new Date(date);
@@ -250,7 +249,8 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.restore();
     
     ctx.save();
-    const sY = bioY + 105;
+    // ОПУСТИЛИ СОЦИАЛЬНЫЙ БЛОК НА 40px (с bioY+105 на bioY+145)
+    const sY = bioY + 145; 
     ctx.font = "14px Fredoka"; ctx.fillStyle = "white";
     const drawIcon = (x, y, color, type) => {
         ctx.save(); ctx.translate(x, y - 12); ctx.fillStyle = color;
@@ -266,27 +266,31 @@ function renderAll(ctx, canvas, avatarImg) {
     drawIcon(185, sY, "white", 'x'); ctx.fillText("Twitter", 207, sY);
     drawIcon(285, sY, "#0088cc", 'tg'); ctx.fillText("Telegram", 307, sY);
     drawIcon(395, sY, "#5865F2", 'dc'); ctx.fillText("Discord", 417, sY);
-    ctx.fillText("🌐 getoro.xyz", 505, sY);
+    ctx.fillText("🌐 opengradient.ai", 505, sY); // ИЗМЕНЕНО: домен
     ctx.restore();
     
     ctx.save();
     ctx.textAlign = "right";
     const pulse = 10 + Math.sin(Date.now() / 500) * 8;
-    const oroGrad = ctx.createLinearGradient(700, 360, 760, 360);
-    oroGrad.addColorStop(0, "#ffcc00"); oroGrad.addColorStop(1, "#ff7a18");
-    ctx.fillStyle = oroGrad; ctx.font = "bold 50px Fredoka";
-    ctx.shadowColor = "#ff7a18"; ctx.shadowBlur = pulse;
-    ctx.fillText("ORO", 760, 360);
+    // ИЗМЕНЕНО: Градиент бирюзовый (OG)
+    const ogGrad = ctx.createLinearGradient(700, 360, 760, 360);
+    ogGrad.addColorStop(0, "#2dd4bf"); 
+    ogGrad.addColorStop(1, "#14b8a6");
+    
+    ctx.fillStyle = ogGrad; ctx.font = "bold 60px Fredoka";
+    ctx.shadowColor = "#14b8a6"; ctx.shadowBlur = pulse;
+    ctx.fillText("OG", 760, 360); // ИЗМЕНЕНО: текст на OG
     ctx.restore();
     
-    const qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://getoro.xyz";
+    // ИЗМЕНЕНО: QR-код теперь ведет на opengradient.ai
+    const qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://opengradient.ai";
     const qrImg = new Image();
     qrImg.crossOrigin = "anonymous";
     qrImg.src = qrSrc;
     if (qrImg.complete) {
         ctx.drawImage(qrImg, 35, 245, 120, 120);
         ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.font = "10px Fredoka"; ctx.textAlign = "center";
-        ctx.fillText("getoro.xyz", 95, 380);
+        ctx.fillText("opengradient.ai", 95, 380); // ИЗМЕНЕНО: подпись
     }
     
     if (isGenerating) {
@@ -310,7 +314,7 @@ function renderAll(ctx, canvas, avatarImg) {
 function downloadCard() {
     const canvas = document.getElementById("cardCanvas");
     const link = document.createElement("a");
-    link.download = "oro-animated-card.png";
+    link.download = "opengradient-card.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
 }

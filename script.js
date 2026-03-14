@@ -88,6 +88,12 @@ function generateCard() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // ИНИЦИАЛИЗАЦИЯ FLATPICKR
+    flatpickr("#date", {
+        dateFormat: "M j, Y", // Английский формат: Mar 14, 2026
+        defaultDate: "today"
+    });
+
     const inputs = ["username", "date", "userBio"];
     inputs.forEach(id => {
         const el = document.getElementById(id);
@@ -192,13 +198,8 @@ function renderAll(ctx, canvas, avatarImg) {
     
     const username = document.getElementById("username").value || "sery2013";
     
-    let date = document.getElementById("date").value;
-    if (date) {
-        const dateObj = new Date(date);
-        date = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    } else {
-        date = "Not set";
-    }
+    // ИЗМЕНЕНО: Просто берем значение из Flatpickr, оно уже на английском
+    let dateValue = document.getElementById("date").value || "Mar 14, 2026";
     
     const bioText = document.getElementById("userBio").value || "Web3 Explorer & Content Enthusiast";
     
@@ -211,7 +212,7 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.strokeStyle = "rgba(255, 204, 0, 0.2)";
     ctx.strokeRect(185, 125, 580, 40);
     ctx.fillStyle = "#aaa"; ctx.font = "18px Fredoka";
-    ctx.fillText("Joined: " + date, 205, 152);
+    ctx.fillText("Joined: " + dateValue, 205, 152);
     ctx.restore();
     
     ctx.save();
@@ -249,7 +250,6 @@ function renderAll(ctx, canvas, avatarImg) {
     ctx.restore();
     
     ctx.save();
-    // ОПУСТИЛИ СОЦИАЛЬНЫЙ БЛОК НА 40px (с bioY+105 на bioY+145)
     const sY = bioY + 145; 
     ctx.font = "14px Fredoka"; ctx.fillStyle = "white";
     const drawIcon = (x, y, color, type) => {
@@ -266,23 +266,21 @@ function renderAll(ctx, canvas, avatarImg) {
     drawIcon(185, sY, "white", 'x'); ctx.fillText("Twitter", 207, sY);
     drawIcon(285, sY, "#0088cc", 'tg'); ctx.fillText("Telegram", 307, sY);
     drawIcon(395, sY, "#5865F2", 'dc'); ctx.fillText("Discord", 417, sY);
-    ctx.fillText("🌐 opengradient.ai", 505, sY); // ИЗМЕНЕНО: домен
+    ctx.fillText("🌐 opengradient.ai", 505, sY); 
     ctx.restore();
     
     ctx.save();
     ctx.textAlign = "right";
     const pulse = 10 + Math.sin(Date.now() / 500) * 8;
-    // ИЗМЕНЕНО: Градиент бирюзовый (OPG)
     const ogGrad = ctx.createLinearGradient(700, 360, 760, 360);
     ogGrad.addColorStop(0, "#2dd4bf"); 
     ogGrad.addColorStop(1, "#14b8a6");
     
     ctx.fillStyle = ogGrad; ctx.font = "bold 60px Fredoka";
     ctx.shadowColor = "#14b8a6"; ctx.shadowBlur = pulse;
-    ctx.fillText("OPG", 760, 360); // ИЗМЕНЕНО: текст на OPG
+    ctx.fillText("OPG", 760, 360); 
     ctx.restore();
     
-    // ИЗМЕНЕНО: QR-код теперь ведет на opengradient.ai
     const qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://opengradient.ai";
     const qrImg = new Image();
     qrImg.crossOrigin = "anonymous";
@@ -290,7 +288,7 @@ function renderAll(ctx, canvas, avatarImg) {
     if (qrImg.complete) {
         ctx.drawImage(qrImg, 35, 245, 120, 120);
         ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.font = "10px Fredoka"; ctx.textAlign = "center";
-        ctx.fillText("opengradient.ai", 95, 380); // ИЗМЕНЕНО: подпись
+        ctx.fillText("opengradient.ai", 95, 380); 
     }
     
     if (isGenerating) {

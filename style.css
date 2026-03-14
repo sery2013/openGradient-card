@@ -155,9 +155,11 @@ body {
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+/* ИЗМЕНЕНО: Исправлено отображение иконки календаря */
 .panel input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
+    opacity: 0.8;
 }
 
 .panel input[type="text"]:focus,

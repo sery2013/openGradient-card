@@ -148,7 +148,7 @@ function renderAll(ctx, canvas, avatarImg) {
     }
     ctx.fillStyle = "rgba(255, 122, 24, 0.04)";
     ctx.font = "bold 40px Fredoka";
-    const symbols = ["( )", "OG", "*", "◇"];
+    const symbols = ["( )", "OРG", "*", "◇"];
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 6; j++) {
             ctx.save();

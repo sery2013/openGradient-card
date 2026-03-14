@@ -1,32 +1,10 @@
-// --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И НАСТРОЙКИ ---
+// --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ ЭФФЕКТОВ ---
 let particles = [];
 let animationId = null;
 let scanLineY = 0;
-let isGenerating = false; 
-let currentAvatarImg = null; 
-let reflectionPos = -500; 
-let mouseX = 0;
-let mouseY = 0;
+let isGenerating = false;
+let currentAvatarImg = null;
 
-// Отслеживание мыши для эффекта притяжения линий
-window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
-
-// Система звуковых эффектов
-function playSound(id, stop = false) {
-    const s = document.getElementById(id);
-    if (!s) return;
-    if (stop) {
-        s.pause();
-        s.currentTime = 0;
-    } else {
-        s.play().catch(() => {});
-    }
-}
-
-// Инициализация потока частиц внутри карточки
 function initDigitalFlow() {
     particles = [];
     for (let i = 0; i < 50; i++) {
@@ -40,11 +18,10 @@ function initDigitalFlow() {
     }
 }
 
-// 3D Tilt эффект для канваса
 function initTilt() {
     const canvas = document.getElementById("cardCanvas");
     if (!canvas) return;
-
+    
     canvas.addEventListener("mousemove", (e) => {
         if (canvas.style.display === "none") return;
         const rect = canvas.getBoundingClientRect();
@@ -56,41 +33,34 @@ function initTilt() {
         const rotateY = ((x - centerX) / centerX) * 10;
         canvas.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
-
+    
     canvas.addEventListener("mouseleave", () => {
         canvas.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
     });
 }
 
-// ОСНОВНАЯ ФУНКЦИЯ ГЕНЕРАЦИИ
 function generateCard() {
-    playSound("soundClick");
-    playSound("soundScan"); 
-
     const canvas = document.getElementById("cardCanvas");
     const skeleton = document.getElementById("skeleton");
-    
     if (canvas) canvas.style.display = "block";
     if (skeleton) skeleton.style.display = "none";
-
+    
     isGenerating = true;
     canvas.classList.add("canvas-generating");
-    scanLineY = 0; 
-
-    // Симуляция процесса сканирования
+    scanLineY = 0;
+    
     setTimeout(() => {
         isGenerating = false;
         canvas.classList.remove("canvas-generating");
-        playSound("soundScan", true);
     }, 2500);
-
+    
     const ctx = canvas.getContext("2d");
+    
     if (particles.length === 0) initDigitalFlow();
     if (animationId) cancelAnimationFrame(animationId);
-
+    
     const avatarInput = document.getElementById("avatar");
-
-    // Загрузка аватара пользователя
+    
     if (avatarInput.files && avatarInput.files[0]) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -105,7 +75,7 @@ function generateCard() {
     } else {
         startLoop();
     }
-
+    
     function startLoop() {
         function frame() {
             renderAll(ctx, canvas, currentAvatarImg);
@@ -117,47 +87,38 @@ function generateCard() {
     initTilt();
 }
 
-// Инициализация календаря Flatpickr
 document.addEventListener("DOMContentLoaded", () => {
-    if(typeof flatpickr !== 'undefined') {
-        flatpickr("#date", {
-            dateFormat: "m/d/Y",
-            altInput: true,
-            altFormat: "F j, Y",
-            theme: "dark"
-        });
-    }
+    const inputs = ["username", "date", "userBio"];
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("input", () => {});
+        }
+    });
+    document.querySelector(".roles")?.addEventListener("change", () => {});
 });
 
-// ГЛАВНЫЙ ЦИКЛ ОТРИСОВКИ (RENDER ENGINE)
 function renderAll(ctx, canvas, avatarImg) {
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Эффект глитча при генерации
-    let glitchX = 0;
-    let glitchY = 0;
-    if (isGenerating && Math.random() > 0.8) {
-        glitchX = Math.random() * 4 - 2;
-        glitchY = Math.random() * 2 - 1;
-    }
-
-    ctx.save();
-    ctx.translate(glitchX, glitchY);
-
-    // Фон самой карточки (Темный хайтек)
     ctx.fillStyle = '#050508';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Оранжевое свечение в углу
+    
     const topGrad = ctx.createRadialGradient(canvas.width, 0, 50, canvas.width, 0, 400);
-    topGrad.addColorStop(0, 'rgba(255, 122, 24, 0.2)');
+    topGrad.addColorStop(0, 'rgba(255, 122, 24, 0.15)');
     topGrad.addColorStop(1, 'rgba(255, 122, 24, 0)');
     ctx.fillStyle = topGrad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Летающие частицы внутри карточки
+    
+    const bottomGrad = ctx.createRadialGradient(0, canvas.height, 50, 0, canvas.height, 500);
+    bottomGrad.addColorStop(0, 'rgba(0, 212, 255, 0.1)');
+    bottomGrad.addColorStop(1, 'rgba(0, 212, 255, 0)');
+    ctx.fillStyle = bottomGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
     particles.forEach(p => {
         p.y += p.speed;
         if (p.y > 400) p.y = -p.length;
@@ -170,9 +131,14 @@ function renderAll(ctx, canvas, avatarImg) {
         ctx.moveTo(p.x, p.y);
         ctx.lineTo(p.x, p.y + p.length);
         ctx.stroke();
+        ctx.fillStyle = `rgba(255, 122, 24, ${p.opacity * 2})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y + p.length, 1, 0, Math.PI * 2); ctx.fill();
     });
-
-    // Декоративная сетка точек
+    
+    let staticScanY = (Date.now() * 0.05) % 400;
+    ctx.fillStyle = "rgba(255, 122, 24, 0.04)";
+    ctx.fillRect(0, staticScanY, canvas.width, 1.5);
+    
     ctx.save();
     ctx.fillStyle = "rgba(255, 255, 255, 0.03)";
     for (let x = 0; x < canvas.width; x += 30) {
@@ -180,225 +146,208 @@ function renderAll(ctx, canvas, avatarImg) {
             ctx.beginPath(); ctx.arc(x, y, 0.8, 0, Math.PI * 2); ctx.fill();
         }
     }
+    ctx.fillStyle = "rgba(255, 122, 24, 0.04)";
+    ctx.font = "bold 40px Fredoka";
+    const symbols = ["( )", "ORO", "*", "◇"];
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 6; j++) {
+            ctx.save();
+            ctx.translate(i * 120, j * 90);
+            ctx.rotate(-Math.PI / 10);
+            ctx.fillText(symbols[(i + j) % symbols.length], 0, 0);
+            ctx.restore();
+        }
+    }
     ctx.restore();
-
-    // ОТРИСОВКА АВАТАРА
+    
     const avX = 25, avY = 70, avS = 140;
     ctx.save();
-    // Рамка аватара
     ctx.strokeStyle = "rgba(255, 122, 24, 0.7)";
-    ctx.lineWidth = 2;
     ctx.strokeRect(avX, avY, avS, avS);
-    
     if (avatarImg) {
-        ctx.drawImage(avatarImg, avX + 2, avY + 2, avS - 4, avS - 4);
+        ctx.drawImage(avatarImg, avX + 1, avY + 1, avS - 2, avS - 2);
     } else {
         ctx.fillStyle = "#1a1a2e";
-        ctx.fillRect(avX + 2, avY + 2, avS - 4, avS - 4);
-        ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
-        ctx.font = "12px Fredoka";
-        ctx.textAlign = "center";
-        ctx.fillText("NO PHOTO", avX + avS/2, avY + avS/2);
+        ctx.fillRect(avX + 1, avY + 1, avS - 2, avS - 2);
     }
     ctx.restore();
-
-    // ТЕКСТОВЫЕ ДАННЫЕ
-    ctx.textAlign = "left";
+    
+    ctx.save();
     ctx.fillStyle = "white";
     ctx.font = "bold 30px Fredoka";
+    ctx.shadowColor = "rgba(255, 122, 24, 0.6)";
+    ctx.shadowBlur = 15;
     ctx.fillText("USER CARD", 25, 45);
-
-    const username = document.getElementById("username").value || "sery2013";
-    const dateInput = document.getElementById("date").value;
-    const dateDisplay = dateInput || "Mar 14, 2026"; 
-    const bioText = document.getElementById("userBio").value || "Web3 Explorer & Content Enthusiast";
-
-    // Никнейм
-    ctx.font = "bold 26px Fredoka";
-    ctx.fillStyle = "#ffcc00";
-    ctx.fillText(username, 205, 100);
-
-    // Дата вступления
-    ctx.font = "16px Fredoka"; 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.fillText("Joined: " + dateDisplay, 205, 130);
-
-    // ОТРИСОВКА РОЛЕЙ (БАДЖИ)
-    const selectedRoles = Array.from(document.querySelectorAll(".roles input[type='checkbox']"))
-                               .filter(chk => chk.checked)
-                               .map(chk => chk.value);
+    ctx.restore();
     
-    let xStart = 205, yStart = 155;
-    selectedRoles.forEach(role => {
-        ctx.font = "bold 12px Fredoka";
-        const bWidth = ctx.measureText(role).width + 20;
-        
-        // Оранжевая подложка роли
-        ctx.fillStyle = "rgba(255, 122, 24, 0.9)";
-        ctx.beginPath(); 
-        ctx.roundRect(xStart, yStart, bWidth, 22, 5); 
-        ctx.fill();
-        
-        // Текст роли
-        ctx.fillStyle = "white"; 
-        ctx.fillText(role, xStart + 10, yStart + 15);
-        
-        xStart += bWidth + 8;
-        if (xStart > 700) { xStart = 205; yStart += 30; } // Перенос ролей
-    });
-
-    // БИОГРАФИЯ
-    ctx.fillStyle = "#ffffff"; 
-    ctx.font = "16px Fredoka";
-    const wrapBio = bioText.length > 50 ? bioText.substring(0, 50) + "..." : bioText;
-    ctx.fillText(wrapBio, 205, 230);
-
-    // --- ОТРИСОВКА СОЦИАЛЬНОГО БЛОКА (Опущено на 40px) ---
-    const socialTextY = 320; // Было выше, опустили
-    const socialStartX = 205;
-    
-    ctx.font = "14px Fredoka";
-    ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-    
-    // Функция рисования иконки с текстом
-    function drawSocial(x, y, icon, text) {
-        // Мы предполагаем, что иконки поставляются в шрифте, для простоты рисуем заглушку
-        // ctx.fillStyle = "rgba(255, 122, 24, 0.6)"; 
-        // ctx.beginPath(); ctx.arc(x, y - 5, 6, 0, Math.PI * 2); ctx.fill(); 
-        
-        ctx.fillStyle = "white";
-        ctx.fillText(text, x + 18, y);
-        return ctx.measureText(text).width + 30;
-    }
-
-    // Twitter
-    let currentX = socialStartX;
     ctx.save();
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-    ctx.font = "bold 15px Arial";
-    ctx.fillText("𝕏", currentX, socialTextY);
+    const lineGrad = ctx.createLinearGradient(275, 0, 765, 0);
+    lineGrad.addColorStop(0, "rgba(255, 122, 24, 0)");
+    lineGrad.addColorStop(0.5, "rgba(255, 122, 24, 0.5)");
+    lineGrad.addColorStop(1, "rgba(255, 122, 24, 0)");
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(275, 35); ctx.lineTo(765, 35); ctx.stroke();
     ctx.restore();
-    currentX += drawSocial(currentX, socialTextY, "tw", "Twitter");
-
-    // Telegram
-    currentX += drawSocial(currentX, socialTextY, "tg", "Telegram");
-
-    // Discord
-    currentX += drawSocial(currentX, socialTextY, "dc", "Discord");
-
-    // Web-сайт
-    currentX += drawSocial(currentX, socialTextY, "wb", "getoro.xyz");
-
-    // --- ОТРИСОВКА ЛОГОТИПА OPENGRADIENT (Заменили ORO, перекрасили) ---
+    
+    const username = document.getElementById("username").value || "sery2013";
+    
+    // ФОРМАТИРОВАНИЕ ДАТЫ НА АНГЛИЙСКИЙ
+    let date = document.getElementById("date").value;
+    if (date) {
+        const dateObj = new Date(date);
+        date = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    } else {
+        date = "Not set";
+    }
+    
+    const bioText = document.getElementById("userBio").value || "Web3 Explorer & Content Enthusiast";
+    
+    ctx.save();
+    ctx.strokeStyle = "rgba(255, 122, 24, 0.3)";
+    ctx.strokeRect(185, 65, 580, 50);
+    ctx.fillStyle = "white"; ctx.font = "bold 24px Fredoka";
+    ctx.fillText(username, 205, 100);
+    
+    ctx.strokeStyle = "rgba(255, 204, 0, 0.2)";
+    ctx.strokeRect(185, 125, 580, 40);
+    ctx.fillStyle = "#aaa"; ctx.font = "18px Fredoka";
+    ctx.fillText("Joined: " + date, 205, 152);
+    ctx.restore();
+    
+    ctx.save();
+    const selectedRoles = Array.from(document.querySelectorAll(".roles input[type='checkbox']")).filter(chk => chk.checked).map(chk => chk.value);
+    let xStart = 185, yStart = 180;
+    selectedRoles.forEach(role => {
+        let c1, c2;
+        if (role === "Gold") { c1= "#B8860B"; c2= "#FFD700"; }
+        else if (role === "Explorer") { c1= "#008B8B"; c2= "#00D4FF"; }
+        else if (role.includes("Tier 1")) { c1= "#CC5500"; c2= "#FF7A18"; }
+        else if (role.includes("Tier 2")) { c1= "#b35900"; c2= "#ff8c1a"; }
+        else if (role.includes("Tier 3")) { c1= "#996600"; c2= "#ffaa00"; }
+        else if (role.includes("Tier 4")) { c1= "#808000"; c2= "#bdb76b"; }
+        else { c1= "#2a2b3d"; c2= "#4a4b5d"; }
+        ctx.font = "bold 13px Fredoka";
+        const bWidth = ctx.measureText(role).width + 26;
+        if(xStart + bWidth > canvas.width - 20) { xStart = 185; yStart += 35; }
+        const g = ctx.createLinearGradient(xStart, yStart, xStart, yStart + 25);
+        g.addColorStop(0, c2); g.addColorStop(1, c1);
+         ctx.fillStyle = g;
+        ctx.beginPath(); ctx.roundRect(xStart, yStart, bWidth, 25, 6); ctx.fill();
+        ctx.fillStyle = "white"; ctx.fillText(role, xStart + 13, yStart + 17);
+        xStart += bWidth + 10;
+    });
+    ctx.restore();
+    
+    ctx.save();
+    const bioY = yStart + 45;
+    ctx.strokeStyle = "rgba(255, 122, 24, 0.3)";
+    ctx.strokeRect(185, bioY, 580, 45);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.05)"; 
+    ctx.fillRect(185, bioY, 580, 45);
+    ctx.fillStyle = "#eee"; ctx.font = "italic 16px Fredoka";
+    ctx.fillText(bioText, 205, bioY + 28);
+    ctx.restore();
+    
+    ctx.save();
+    const sY = bioY + 105;
+    ctx.font = "14px Fredoka"; ctx.fillStyle = "white";
+    const drawIcon = (x, y, color, type) => {
+        ctx.save(); ctx.translate(x, y - 12); ctx.fillStyle = color;
+        if (type === 'tg') {
+            ctx.beginPath(); ctx.moveTo(0, 7); ctx.lineTo(15, 0); ctx.lineTo(13, 15); ctx.lineTo(9, 10); ctx.lineTo(9, 14); ctx.lineTo(7, 10); ctx.fill();
+        } else if (type === 'x') {
+            ctx.font = "bold 15px Arial"; ctx.fillStyle = "white"; ctx.fillText("𝕏", 0, 13);
+        } else if (type === 'dc') {
+            ctx.beginPath(); ctx.arc(8, 7, 7, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.restore();
+    };
+    drawIcon(185, sY, "white", 'x'); ctx.fillText("Twitter", 207, sY);
+    drawIcon(285, sY, "#0088cc", 'tg'); ctx.fillText("Telegram", 307, sY);
+    drawIcon(395, sY, "#5865F2", 'dc'); ctx.fillText("Discord", 417, sY);
+    ctx.fillText("🌐 getoro.xyz", 505, sY);
+    ctx.restore();
+    
+    ctx.save();
     ctx.textAlign = "right";
-    
-    // Создаем градиент для логотипа в тон проекта
-    const logoGrad = ctx.createLinearGradient(canvas.width - 250, 370, canvas.width - 20, 370);
-    logoGrad.addColorStop(0, '#2dd4bf'); // Бирюзовый в начале
-    logoGrad.addColorStop(1, '#14b8a6'); // Более темный бирюзовый в конце
-    
-    ctx.fillStyle = logoGrad; 
-    ctx.font = "bold 35px Fredoka";
-    ctx.fillText("OPENGRADIENT", 770, 370);
-
-    // ДИНАМИЧЕСКИЙ БЛИК (REFLECTION EFFECT)
-    reflectionPos += 5; 
-    if (reflectionPos > canvas.width + 500) reflectionPos = -500;
-    const reflectGrad = ctx.createLinearGradient(reflectionPos, 0, reflectionPos + 300, 400);
-    reflectGrad.addColorStop(0, "rgba(255, 255, 255, 0)");
-    reflectGrad.addColorStop(0.5, "rgba(255, 255, 255, 0.08)"); 
-    reflectGrad.addColorStop(1, "rgba(255, 255, 255, 0)");
-    ctx.fillStyle = reflectGrad;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+    const pulse = 10 + Math.sin(Date.now() / 500) * 8;
+    const oroGrad = ctx.createLinearGradient(700, 360, 760, 360);
+    oroGrad.addColorStop(0, "#ffcc00"); oroGrad.addColorStop(1, "#ff7a18");
+    ctx.fillStyle = oroGrad; ctx.font = "bold 50px Fredoka";
+    ctx.shadowColor = "#ff7a18"; ctx.shadowBlur = pulse;
+    ctx.fillText("ORO", 760, 360);
     ctx.restore();
-
-    // ЛИНИЯ СКАНИРОВАНИЯ
+    
+    const qrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://getoro.xyz";
+    const qrImg = new Image();
+    qrImg.crossOrigin = "anonymous";
+    qrImg.src = qrSrc;
+    if (qrImg.complete) {
+        ctx.drawImage(qrImg, 35, 245, 120, 120);
+        ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.font = "10px Fredoka"; ctx.textAlign = "center";
+        ctx.fillText("getoro.xyz", 95, 380);
+    }
+    
     if (isGenerating) {
-        scanLineY += 7;
+        scanLineY += 8;
         if (scanLineY > 400) scanLineY = 0;
-        ctx.strokeStyle = "rgba(255, 204, 0, 0.8)";
-        ctx.lineWidth = 3;
+        ctx.save();
+        let scanGrad = ctx.createLinearGradient(0, scanLineY - 40, 0, scanLineY);
+        scanGrad.addColorStop(0, "transparent");
+        scanGrad.addColorStop(1, "rgba(255, 122, 24, 0.4)");
+        ctx.fillStyle = scanGrad;
+        ctx.fillRect(0, scanLineY - 40, canvas.width, 40);
+        ctx.strokeStyle = "#ffcc00";
+        ctx.lineWidth = 2;
         ctx.shadowBlur = 15;
-        ctx.shadowColor = "#ffcc00";
-        ctx.beginPath(); 
-        ctx.moveTo(0, scanLineY); 
-        ctx.lineTo(canvas.width, scanLineY); 
-        ctx.stroke();
-        ctx.shadowBlur = 0; // Сброс тени для остальных элементов
+        ctx.shadowColor = "#ff7a18";
+        ctx.beginPath(); ctx.moveTo(0, scanLineY); ctx.lineTo(canvas.width, scanLineY); ctx.stroke();
+        ctx.restore();
     }
 }
 
-// ФУНКЦИЯ СКАЧИВАНИЯ
 function downloadCard() {
-    playSound("soundClick");
     const canvas = document.getElementById("cardCanvas");
-    if (!canvas || canvas.style.display === "none") return;
-    
     const link = document.createElement("a");
-    link.download = `OPENGRADIENT_Card_${Date.now()}.png`;
+    link.download = "oro-animated-card.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
 }
 
-// --- ФОНОВАЯ АНИМАЦИЯ САЙТА (МАТРИЦА/ЛИНИИ) ---
 (function() {
     const bgCanvas = document.getElementById("bgCanvas");
     if (!bgCanvas) return;
     const bgCtx = bgCanvas.getContext("2d");
     let bgLines = [];
-
+    
     function init() {
         bgCanvas.width = window.innerWidth;
         bgCanvas.height = window.innerHeight;
-        bgLines = [];
-        for (let i = 0; i < 80; i++) {
-            bgLines.push({
-                x: Math.random() * bgCanvas.width,
-                y: Math.random() * bgCanvas.height,
-                speed: Math.random() * 0.8 + 0.2,
-                len: Math.random() * 150 + 50,
-                op: Math.random() * 0.25
-            });
-        }
+        bgLines = Array.from({ length: 60 }, () => ({
+            x: Math.random() * bgCanvas.width,
+            y: Math.random() * bgCanvas.height,
+            speed: Math.random() * 1 + 0.5,
+            len: Math.random() * 100 + 50,
+            op: Math.random() * 0.3
+        }));
     }
-
+    
     function animate() {
-        bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        
+        bgCtx.fillStyle = '#050508';
+        bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
         bgLines.forEach(l => {
-            // Рассчитываем влияние мыши
-            let dx = mouseX - l.x;
-            let dy = mouseY - l.y;
-            let dist = Math.sqrt(dx*dx + dy*dy);
-            let currentSpeed = l.speed;
-            
-            // Если мышь рядом, линии ускоряются
-            if (dist < 300) {
-                currentSpeed += (1 - dist/300) * 5;
-            }
-
-            l.y += currentSpeed;
-            if (l.y > bgCanvas.height) { 
-                l.y = -l.len; 
-                l.x = Math.random() * bgCanvas.width; 
-            }
-            
-            // Белые «энергетические» линии на оранжевом фоне
+            l.y += l.speed;
+            if (l.y > bgCanvas.height) { l.y = -l.len; l.x = Math.random() * bgCanvas.width; }
             let g = bgCtx.createLinearGradient(0, l.y, 0, l.y + l.len);
             g.addColorStop(0, 'transparent');
-            g.addColorStop(1, `rgba(255, 255, 255, ${l.op})`);
-            
+            g.addColorStop(1, `rgba(255, 122, 24, ${l.op})`);
             bgCtx.strokeStyle = g;
-            bgCtx.lineWidth = 1;
-            bgCtx.beginPath(); 
-            bgCtx.moveTo(l.x, l.y); 
-            bgCtx.lineTo(l.x, l.y + l.len); 
-            bgCtx.stroke();
+            bgCtx.beginPath(); bgCtx.moveTo(l.x, l.y); bgCtx.lineTo(l.x, l.y + l.len); bgCtx.stroke();
         });
         requestAnimationFrame(animate);
     }
-
+    
     window.addEventListener('resize', init);
     init();
     animate();
